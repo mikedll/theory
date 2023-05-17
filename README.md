@@ -198,3 +198,33 @@ Writer III and Reader B are racing for bufferSem, which is weird.
 
 
   
+#### Third Solution (WIP)
+
+
+
+reader:
+
+```
+outerSem.wait()
+outerSem.signal()
+
+readerSem.wait()
+  bufferSem.wait()
+    myThing = buffer.read()
+  bufferSem.signal()
+readerSem.signal()
+
+return myThing
+```
+
+writer:
+
+```
+given m, where m is something to write
+
+outer.wait()
+  bufferSem.wait()
+    buffer.write(m)
+  bufferSem.signal()
+outerSem.signal()
+```
