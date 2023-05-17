@@ -139,16 +139,22 @@ Writer III writes, finishes, signals writerSem to 1
 
 The problem is that Writer III was not able to cut in front of Reader B.
 
-#### Second solution (WIP)
+#### Second solution
 
 reader:
 
 ```
 readerSem.wait()
-  writerSem.wait()
+
+  singleReaderSem.wait()
+  singleReaderSem.signal()
+  
+  bufferSem.wait()
     myThing = buffer.read()
-  writerSem.signal()
+  bufferSem.signal()
+
 readerSem.signal()
+
 return myThing
 ```
 
@@ -156,12 +162,39 @@ writer:
 
 ```
 given m, where m is something to write
-writerSem.wait()
-  buffer.write(m)
-writerSem.signal()
+
+singleReader.wait()
+  bufferSem.wait()
+    buffer.write(m)
+  bufferSem.signal()
+singleReader.signal()
 ```
 
 
+
+```
+Reader A enters CS
+Reader B waits on readerSem, blocks (reader queue: B)
+Writer I waits on bufferSem, blocks (buffer queue: I)
+Writer II waits on singleReaderSem, blocks (singleReader queue: II)
+Reader A reads, finishes, signals bufferSem (buffer queue: )
+Writer I captures bufferSem
+Reader A signals readerSem (reader queue: )
+Reader B captures readerSem
+Reader B waits on singleReaderSem (singleReader queue: II, B)
+Writer III waits on singleReaderSem (singleReader queue: II, B, III)
+Writer I writes, finishes, signals bufferSem to 1
+Writer I signals singleReaderSem (singleReader queue: B, III)
+Writer II captures singleReaderSem
+Writer II captures bufferSem
+Writer II writes, finishes, signals bufferSem to 1
+Writer II signals singleReaderSem (singleReader queue: III)
+Reader B captures singleReaderSem
+Reader B signals singleReaderSem (singleReader queue: )
+Writer III captures singleReaderSem
+```
+
+Writer III and Reader B are racing for bufferSem, which is weird.
 
 
   
