@@ -1,8 +1,7 @@
 
 Queues are FIFO, where the next person to be dequeue is on the left.
 
-Problem 1: multiple readers, 1 writer, writer gets priority
-
+```
 binary semaphore (has value 0 or 1)
 sem.wait(), done when entering the critical section, uses 1 capacity
             you can only enter the critical section if you capture the available capacity
@@ -11,9 +10,11 @@ sem.wait(), done when entering the critical section, uses 1 capacity
 sem.signal() called when exiting the critical section
              if someone is blocked, wakes them up
              else, increases value from 0 to 1
+```
 
+### Problem 1: multiple readers, 1 writer, writer gets priority
 
-### First solution
+#### First solution
 
 reader:
 
@@ -42,6 +43,8 @@ Writer I enters (queue: )
 Writer I exits
 
 The problem is that Writer I had to wait for Reader B. Writer I should cut in line in front of B, somehow.
+
+#### Second solution
 
 reader:
 
@@ -76,9 +79,9 @@ Reader B signals readerSem to 1
 
 
   
-Problem 1: multiple readers, multiple writers, writers have priority
+### Problem 2: multiple readers, multiple writers, writers have priority
 
-
+#### First Solution
 
 reader:
 
@@ -118,6 +121,7 @@ Writer III writes, finishes, signals writerSem to 1
 
 The problem is that Writer III was not able to cut in front of Reader B.
 
+#### Second solution (WIP)
 
 reader:
 
