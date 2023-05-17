@@ -121,15 +121,15 @@ Reader A enters CS
 Reader B waits on readerSem, blocks (reader queue: B)
 Writer I waits on writerSem, blocks (writer queue: I)
 Writer II waits on writerSem, blocks (writer queue: I, II)
-Reader A finishes reading, signals writerSem (writer queue: II)
+Reader A reads, finishes, signals writerSem (writer queue: II)
 Writer I captures writerSem
 Reader A signals readerSem (reader queue: )
 Reader B captures readerSem
 Reader B waits on writerSem, blocks (writer queue: II, B)
 Writer III waits on writerSem (writer queue: II, B, III)
-Writer I writes, finishes writing, signals writerSem (writer queue: B, III)
+Writer I writes, finishes, signals writerSem (writer queue: B, III)
 Writer II captures writerSem
-Writer II writes, finishes writing, signals writerSem (writer queue: III)
+Writer II writes, finishes, signals writerSem (writer queue: III)
 Reader B captures writerSem
 Reader B reads, signals writerSem (writer queue: )
 Writer III captures writerSem
