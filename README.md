@@ -205,13 +205,19 @@ Writer III and Reader B are racing for bufferSem, which is weird.
 reader:
 
 ```
-outerSem.wait()
-outerSem.signal()
-
 readerSem.wait()
+
+  while true
+    guardSem.wait()
+      myWriters = writers
+    guardSem.signal()
+    if myWriters == 0
+      break
+  
   bufferSem.wait()
     myThing = buffer.read()
   bufferSem.signal()
+
 readerSem.signal()
 
 return myThing
@@ -222,9 +228,16 @@ writer:
 ```
 given m, where m is something to write
 
-outer.wait()
-  bufferSem.wait()
-    buffer.write(m)
-  bufferSem.signal()
-outerSem.signal()
+guardSem.wait()
+  writers += 1
+guardSem.signal()
+
+bufferSem.wait()
+  buffer.write(m)
+bufferSem.signal()
+
+guardSem.wait()
+  writers -= 1
+guardSem.signal()
+
 ```
