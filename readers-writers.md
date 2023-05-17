@@ -246,3 +246,5 @@ guardSem.wait()
 guardSem.signal()
 
 ```
+
+It's possible for readers to starve, here.
