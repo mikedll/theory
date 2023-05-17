@@ -213,6 +213,9 @@ readerSem.wait()
     guardSem.signal()
     if myWriters == 0
       break
+
+    loopStallSem.wait()
+    loopStallSem.signal()
   
   bufferSem.wait()
     myThing = buffer.read()
@@ -232,9 +235,11 @@ guardSem.wait()
   writers += 1
 guardSem.signal()
 
-bufferSem.wait()
-  buffer.write(m)
-bufferSem.signal()
+loopStallSem.wait()
+  bufferSem.wait()
+    buffer.write(m)
+  bufferSem.signal()
+loopStallSem.signal()
 
 guardSem.wait()
   writers -= 1
