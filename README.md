@@ -18,21 +18,26 @@ sem.signal() called when exiting the critical section
 
 reader:
 
+```
 bufferSem.wait()
   myThing = buffer.read()
 bufferSem.signal()
 return myThing
+```
 
 writer:
 
+```
 given m, where m is something to write
 bufferSem.wait()
   buffer.write(m)
 bufferSem.signal()
+```
 
 
 Suppose:
 
+```
 Reader A enter CS
 Reader B tries to enter, blocks (queue: B)
 Writer I tries to enter, blocks (queue: B, I)
@@ -41,6 +46,7 @@ Reader B enters (queue: I)
 Reader B exits (queue: I)
 Writer I enters (queue: )
 Writer I exits
+```
 
 The problem is that Writer I had to wait for Reader B. Writer I should cut in line in front of B, somehow.
 
@@ -48,20 +54,25 @@ The problem is that Writer I had to wait for Reader B. Writer I should cut in li
 
 reader:
 
+```
 readerSem.wait()
   writerSem.wait()
     myThing = buffer.read()
   writerSem.signal()
 readerSem.signal()
 return myThing
+```
 
 writer:
 
+```
 given m, where m is something to write
 writerSem.wait()
   buffer.write(m)
 writerSem.signal()
+```
 
+```
 Reader A enter CS
 Reader B tries to enter, blocks at readerSem (reader queue: B)
 Writer I tries to enter, blocks at writerSem (writer queue: I)
@@ -76,6 +87,7 @@ Reader B captures writerSem
 Reader B starts reading
 Reader B signals writerSem to 1
 Reader B signals readerSem to 1
+```
 
 
   
@@ -85,21 +97,26 @@ Reader B signals readerSem to 1
 
 reader:
 
+```
 readerSem.wait()
   writerSem.wait()
     myThing = buffer.read()
   writerSem.signal()
 readerSem.signal()
 return myThing
+```
 
 writer:
 
+```
 given m, where m is something to write
 writerSem.wait()
   buffer.write(m)
 writerSem.signal()
+```
 
 
+```
 Reader A enters CS
 Reader B waits on readerSem, blocks (reader queue: B)
 Writer I waits on writerSem, blocks (writer queue: I)
@@ -118,6 +135,7 @@ Reader B reads, signals writerSem (writer queue: )
 Writer III captures writerSem
 Reader B signals readerSem to 1
 Writer III writes, finishes, signals writerSem to 1       
+```
 
 The problem is that Writer III was not able to cut in front of Reader B.
 
@@ -125,19 +143,23 @@ The problem is that Writer III was not able to cut in front of Reader B.
 
 reader:
 
+```
 readerSem.wait()
   writerSem.wait()
     myThing = buffer.read()
   writerSem.signal()
 readerSem.signal()
 return myThing
+```
 
 writer:
 
+```
 given m, where m is something to write
 writerSem.wait()
   buffer.write(m)
 writerSem.signal()
+```
 
 
 
