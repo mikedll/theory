@@ -6,6 +6,15 @@ import (
 	"time"
 )
 
+func otherTest() {
+	// var c chan int
+	c := make(chan int)
+
+	fmt.Printf("Going to push an int onto the channel\n")
+	c <- 5
+	fmt.Printf("Pushed an int onto the channel\n")
+}
+
 func doWork(max int, resultsCh chan int, isDoneCh chan bool) {
 	total := rand.Intn(max)
 	
@@ -17,8 +26,7 @@ func doWork(max int, resultsCh chan int, isDoneCh chan bool) {
 	isDoneCh <- true
 }
 
-func main() {
-
+func test1() {
 	now := time.Now()
 	rand.Seed(now.Unix())
 	
@@ -38,4 +46,9 @@ func main() {
 	}
 	
 	fmt.Printf("Work is done\n")
+}
+
+func main() {
+	// test1()
+	otherTest()
 }
